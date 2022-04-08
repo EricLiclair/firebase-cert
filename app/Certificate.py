@@ -11,6 +11,10 @@ from PIL import ImageFont
 
 
 
+# add the templates inside template folder
+# move fonts to assets/fonts
+# change certificates folder location
+# file path variables: normalize
 
 cwd = os.getcwd()
 
@@ -41,6 +45,9 @@ class Certificate:
 
 # here i have given a particular path to create a folder 
   
+
+  # give a nice function name
+  # this should be a private method
   def create_os(self) :
       directory = "certificates"
       parent_dir = cwd + "/app/der1"

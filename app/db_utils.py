@@ -9,8 +9,8 @@ def check_if_file_already_exists():
   return False
 
 
-def store_image_in_db(certificate_path, id):
-  file_name = f"{STORAGE_LOCATION}/{id}.{certificate_path.split('.')[-1]}"
+def store_image_in_db(certificate_path, event_name, id):
+  file_name = f"{STORAGE_LOCATION}/{event_name}/{id}.{certificate_path.split('.')[-1]}"
   blob = bucket.blob(file_name)
   blob.upload_from_filename(certificate_path)
   blob.make_public()

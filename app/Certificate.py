@@ -39,7 +39,7 @@ class Certificate:
     print('uploading certificate...', self.id)
     file_stored = store_image_in_db(certificate_path, self.event_name, self.id)
     print('file uploaded at', file_stored)
-    self.delete_folder()
+    self.__delete_folder()
     print('deleting temporary image at', certificate_path)
     return file_stored
 
@@ -48,9 +48,10 @@ class Certificate:
 
   # give a nice function name
   # this should be a private method
-  def create_os(self) :
+  def __create_folder(self) :
       directory = "certificates"
-      parent_dir = cwd + "/app/der1"
+      parent_dir = cwd + "/app"
+      print(f"this is cwd    {cwd}")
       path = os.path.join(parent_dir, directory) 
       try :
           os.mkdir(path)
@@ -58,28 +59,27 @@ class Certificate:
       except :
           return path
 
-  def delete_folder(self):
-    path_end = os.path.join(temp, self.id)
-    #list_dir = os.listdir(temp)
+  def __delete_folder(self):
+    path_end = os.path.join(self.certificate_path, self.id)
+    #list_dir = os.listdir(self.certificate_path)
     #print(list_dir)
     os.remove(f"{path_end}.png")
-    os.rmdir(temp)
+    os.rmdir(self.certificate_path)
     print("temporary folder deleted")
     
 
   def generate_certificate(self):
     print('generating certificate...')
-    im = Image.open(cwd + "/app/der1/Kotlin.png")
+    im = Image.open(cwd + "/app/templates/Kotlin.png")
     draw= ImageDraw.Draw(im)
-    myfont = ImageFont.truetype(cwd + "/app/der1/Google-sans-Font-Family/ProductSans-Black.ttf",size = 50)
-    myfont2 = ImageFont.truetype(cwd + "/app/der1/Google-sans-Font-Family/ProductSans-Regular.ttf",size = 25)
+    myfont = ImageFont.truetype(cwd + "/app/assets/fonts/Google-sans-Font-Family/Black.ttf",size = 50)
+    myfont2 = ImageFont.truetype(cwd + "/app/assets/fonts/Google-sans-Font-Family/Regular.ttf",size = 25)
     W,H = im.size
     w , h =draw.textsize(self.name , font=myfont)
     draw.text(((W-w)/2 ,297) , self.name ,font = myfont ,  fill=(71,218 ,136))
     draw.text((100,100) , self.id , font = myfont2 , fill = (71,218,136))
-    global temp
-    temp = self.create_os()
-    file_path = f"{temp}/{self.id}.png"
+    self.certificate_path = self.__create_folder()
+    file_path = f"{self.certificate_path}/{self.id}.png"
     im.save(file_path)
     print('details - ', self.name, self.id, self.date)
     generated_certificate_path = file_path

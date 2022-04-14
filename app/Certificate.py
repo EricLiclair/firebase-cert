@@ -99,7 +99,8 @@ class Certificate:
       "name": self.name,
       "id": self.id,
       "date": self.date,
-      "certificate_url": self.certificate_url
+      "certificate_url": self.certificate_url,
+      "event_name":self.event_name
     }
 
     

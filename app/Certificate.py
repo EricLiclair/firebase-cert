@@ -11,7 +11,7 @@ from PIL import ImageFont
 
 
 
-# add the templates inside template folder
+# add the templates inscertificate_ide template folder
 # move fonts to assets/fonts
 # change certificates folder location
 # file path variables: normalize
@@ -22,24 +22,24 @@ cwd = os.getcwd()
 class Certificate:
   def __init__(self, 
   name: str, 
-  id: str, 
+  certificate_id: str, 
   date: date,
   event_name: str
   ) -> None:
       self.name = name
-      self.id = id
+      self.certificate_id = certificate_id
       self.date = parse(date)
       self.certificate_url = None
       self.event_name = event_name
-      self.certificate_path = None
+      self.certificate_folder = None
   
   
 
   def _upload_generated_certificate(self, certificate_path):
-    print('uploading certificate...', self.id)
-    file_stored = store_image_in_db(certificate_path, self.event_name, self.id)
+    print('uploading certificate...', self.certificate_id)
+    file_stored = store_image_in_db(certificate_path, self.event_name, self.certificate_id)
     print('file uploaded at', file_stored)
-    self.__delete_folder()
+    self._delete_folder()
     print('deleting temporary image at', certificate_path)
     return file_stored
 
@@ -48,7 +48,7 @@ class Certificate:
 
   # give a nice function name
   # this should be a private method
-  def __create_folder(self) :
+  def _create_folder(self) :
       directory = "certificates"
       parent_dir = cwd + "/app"
       print(f"this is cwd    {cwd}")
@@ -59,12 +59,12 @@ class Certificate:
       except :
           return path
 
-  def __delete_folder(self):
-    path_end = os.path.join(self.certificate_path, self.id)
-    #list_dir = os.listdir(self.certificate_path)
+  def _delete_folder(self):
+    path_end = os.path.join(self.certificate_folder, self.certificate_id)
+    #list_dir = os.listdir(self.certificate_folder)
     #print(list_dir)
     os.remove(f"{path_end}.png")
-    os.rmdir(self.certificate_path)
+    os.rmdir(self.certificate_folder)
     print("temporary folder deleted")
     
 
@@ -77,11 +77,11 @@ class Certificate:
     W,H = im.size
     w , h =draw.textsize(self.name , font=myfont)
     draw.text(((W-w)/2 ,297) , self.name ,font = myfont ,  fill=(71,218 ,136))
-    draw.text((100,100) , self.id , font = myfont2 , fill = (71,218,136))
-    self.certificate_path = self.__create_folder()
-    file_path = f"{self.certificate_path}/{self.id}.png"
+    draw.text((100,100) , self.certificate_id , font = myfont2 , fill = (71,218,136))
+    self.certificate_folder = self._create_folder()
+    file_path = f"{self.certificate_folder}/{self.certificate_id}.png"
     im.save(file_path)
-    print('details - ', self.name, self.id, self.date)
+    print('details - ', self.name, self.certificate_id, self.date)
     generated_certificate_path = file_path
     return generated_certificate_path
 
@@ -93,14 +93,8 @@ class Certificate:
     self.certificate_url = generated_certificate_url
 
   
-  def get_certificate_details(self):
-
-    return {
-      "name": self.name,
-      "id": self.id,
-      "date": self.date,
-      "certificate_url": self.certificate_url,
-      "event_name":self.event_name
-    }
+  def get_certificate_url(self):
+    self.generate_and_upload_certificate()
+    return self.certificate_url
 
     
